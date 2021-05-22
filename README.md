@@ -33,6 +33,11 @@ So I wrote a set of scripts to do the work for me.
 And here I present this project that will assemble, disassemble, and even let
 you debug programs written in assembled ~REDACTED~.
 
+If you want to jump right in now and read the documentation later, navigate to
+this directory in the terminal and just run `python3 decoder.py` to be dropped
+into a debugger session with an actual challenge copied straight from the
+course.
+
 ---
 
 ## Note on the Redacted
@@ -69,7 +74,7 @@ separate .y85 script file. I tried to make this as similar to an existing
 language compiler as possible, and you can even make inline comments with
 the "#" sign both in the inline and separate file scripts.  Finally, there is
 no indentation requirement for parsing ~REDACTED~, the only requirement is that
-each instruction and comment sits on its own lin
+each instruction and comment sits on its own line.
 
 For those familiar with pwntools, I tried to emulate their inline assembly
 style while developing my assembler for this architecture so you might see some
@@ -141,27 +146,26 @@ instructions contained in the program in a format like this:
 If you toggle register display before getting the list, it will look like this:
 ```
 [0x1]   a:0x0, b:0x0, c:0x0, d:0x71
-          s:0x0, i:0x2, f:0x0
-          mov c, 0x91
+        s:0x0, i:0x2, f:0x0
+        mov c, 0x91
 [0x2]   a:0x0, b:0x0, c:0x91, d:0x71
-          s:0x0, i:0x3, f:0x0
-          stm Stack[c], d (*c = d)
+        s:0x0, i:0x3, f:0x0
+        stm Stack[c], d (*c = d)
 [0x3]   a:0x0, b:0x0, c:0x91, d:0x71
-          s:0x0, i:0x4, f:0x0
-          mov d, 0x4f
+        s:0x0, i:0x4, f:0x0
+        mov d, 0x4f
 [0x4]   a:0x0, b:0x0, c:0x91, d:0x4f
-          s:0x0, i:0x5, f:0x0
-          mov c, 0x96
+        s:0x0, i:0x5, f:0x0
+        mov c, 0x96
 [0x5]   a:0x0, b:0x0, c:0x96, d:0x4f
-          s:0x0, i:0x6, f:0x0
-          stm Stack[c], d (*c = d)
+        s:0x0, i:0x6, f:0x0
+        stm Stack[c], d (*c = d)
 ```
 
 You can then go through and statically analyze the disassembled ~REDACTED~
 code at your leisure.
 
 # Debugging ~REDACTED~ Code
----
 While the static analysis features of this project are handy, I wanted to make
 the challenges even more easier for myself, so I wrote a my own interpreter and
 a gdb analog for this architecture, which I call YDB (see if you can find the
@@ -206,8 +210,8 @@ here at the top so you can get an idea.
     * Inspecting Open File Descriptors
 
 
-Now we'll step thorugh one at a time, since, as you'll notice, the one feature
-I neglected to add was a "help" feature.
+Now we'll step through one at a time, since, as you'll notice, the one feature
+I neglected to add was a `help` command.
 
 ## Control Flow
 ### Stepping and Continuing Execution
@@ -381,7 +385,7 @@ consist of `set <location> <value>`, 3 space-separated values.
     location.
 
 
-You can enter in a set command at any time program execution is paused and you
+You can enter in a `set` command at any time program execution is paused and you
 have a debugger prompt, allowing you to go down different execution paths at
 will.
 
@@ -403,18 +407,18 @@ Here are some examples setting the registers:
 
     YDB> set i 0x50
     YDB> inst 5
-        current + 0: add a, d (a += d) => 0x042010
-        current + 1: add b, d (b += d) => 0x041010
-        current + 2: push a => 0x200040
-        current + 3: push b => 0x100040
-        current + 4: ldm a, Stack[a] (a = *a) => 0x202004
+        current + 0: add a, d (a += d)
+        current + 1: add b, d (b += d)
+        current + 2: push a
+        current + 3: push b
+        current + 4: ldm a, Stack[a] (a = *a)
     YDB> set i 0x53
     YDB> inst 5
-        current + 0: push b => 0x100040
-        current + 1: ldm a, Stack[a] (a = *a) => 0x202004
-        current + 2: ldm b, Stack[b] (b = *b) => 0x101004
-        current + 3: cmp a, b => 0x102080
-        current + 4: pop b => 0x001040
+        current + 0: push b
+        current + 1: ldm a, Stack[a] (a = *a)
+        current + 2: ldm b, Stack[b] (b = *b)
+        current + 3: cmp a, b
+        current + 4: pop b
 
 
 
